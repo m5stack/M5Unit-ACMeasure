@@ -20,6 +20,8 @@
 #define UNIT_ACMEASURE_VOLTAGE_FACTOR_REG        0xC0
 #define UNIT_ACMEASURE_CURRENT_FACTOR_REG        0xD0
 #define UNIT_ACMEASURE_SAVE_FACTOR_REG           0xE0
+#define UNIT_ACMEASURE_GET_READY_REG             0xFC
+#define JUMP_TO_BOOTLOADER_REG                   0xFD
 #define FIRMWARE_VERSION_REG                     0xFE
 #define I2C_ADDRESS_REG                          0xFF
 
@@ -39,8 +41,8 @@ class UNIT_ACMEASURE {
     uint8_t getFirmwareVersion(void);
     uint16_t getVoltage(void);
     uint16_t getCurrent(void);
-    uint16_t getPower(void);
-    uint16_t getApparentPower(void);
+    uint32_t getPower(void);
+    uint32_t getApparentPower(void);
     uint8_t getPowerFactor(void);
     uint32_t getKWH(void);
     void getVoltageString(char *str);
@@ -49,12 +51,14 @@ class UNIT_ACMEASURE {
     void getApparentPowerString(char *str);
     void getPowerFactorString(char *str);
     void getKWH(char *str);
+    uint8_t getReady(void);
     void setKWH(uint32_t value);
     uint8_t getVoltageFactor(void);
     uint8_t getCurrentFactor(void);
     void setVoltageFactor(uint8_t value);
     void setCurrentFactor(uint8_t value);
     void saveVoltageCurrentFactor(void);
+    void jumpBootloader(void);
     uint8_t setI2CAddress(uint8_t addr);
     uint8_t getI2CAddress(void);
 };

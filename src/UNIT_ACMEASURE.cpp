@@ -54,17 +54,19 @@ uint16_t UNIT_ACMEASURE::getCurrent(void) {
     return value;
 }
 
-uint16_t UNIT_ACMEASURE::getPower(void) {
+uint32_t UNIT_ACMEASURE::getPower(void) {
     uint8_t data[4];
-    readBytes(_addr, UNIT_ACMEASURE_POWER_REG, data, 2);
-    uint16_t value = data[0] | (data[1] << 8);
+    readBytes(_addr, UNIT_ACMEASURE_POWER_REG, data, 4);
+    uint32_t value =
+        data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
     return value;
 }
 
-uint16_t UNIT_ACMEASURE::getApparentPower(void) {
+uint32_t UNIT_ACMEASURE::getApparentPower(void) {
     uint8_t data[4];
-    readBytes(_addr, UNIT_ACMEASURE_APPARENT_POWER_REG, data, 2);
-    uint16_t value = data[0] | (data[1] << 8);
+    readBytes(_addr, UNIT_ACMEASURE_APPARENT_POWER_REG, data, 4);
+    uint32_t value =
+        data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
     return value;
 }
 
@@ -78,7 +80,7 @@ uint32_t UNIT_ACMEASURE::getKWH(void) {
     uint8_t data[4];
     readBytes(_addr, UNIT_ACMEASURE_KWH_REG, data, 4);
     uint32_t value =
-        data[0] | (data[1] << 8) | (data[1] << 16) | (data[1] << 24);
+        data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
     return value;
 }
 
@@ -144,6 +146,13 @@ uint8_t UNIT_ACMEASURE::getCurrentFactor(void) {
     return data[0];
 }
 
+uint8_t UNIT_ACMEASURE::getReady(void) {
+    char read_buf[7] = {0};
+
+    readBytes(_addr, UNIT_ACMEASURE_GET_READY_REG, (uint8_t *)read_buf, 1);
+    return read_buf[0];
+}
+
 void UNIT_ACMEASURE::setVoltageFactor(uint8_t value) {
     writeBytes(_addr, UNIT_ACMEASURE_VOLTAGE_FACTOR_REG, (uint8_t *)&value, 1);
 }
@@ -156,6 +165,12 @@ void UNIT_ACMEASURE::saveVoltageCurrentFactor(void) {
     uint8_t value = 1;
 
     writeBytes(_addr, UNIT_ACMEASURE_SAVE_FACTOR_REG, (uint8_t *)&value, 1);
+}
+
+void UNIT_ACMEASURE::jumpBootloader(void) {
+    uint8_t value = 1;
+
+    writeBytes(_addr, JUMP_TO_BOOTLOADER_REG, (uint8_t *)&value, 1);
 }
 
 uint8_t UNIT_ACMEASURE::setI2CAddress(uint8_t addr) {
